@@ -1,0 +1,402 @@
+---
+import Logo from "@assets/shared/logo.svg";
+import Burger from "@assets/shared/icon-hamburger.svg";
+import Close from "@assets/shared/icon-close.svg";
+import NavLink from "./NavLink.astro";
+
+const { pathname } = Astro.url;
+
+const navItems = [
+  { href: "/", label: "Home", number: "00" },
+  { href: "/destination", label: "Destination", number: "01" },
+  { href: "/crew", label: "Crew", number: "02" },
+  { href: "/technology", label: "Technology", number: "03" },
+];
+
+const isCurrentPage = (href: string) => {
+  if (href === "/") {
+    return pathname === "/";
+  }
+  return pathname.startsWith(href);
+};
+---
+
+<header>
+  <div class="logo">
+    <a
+      class="logo__link"
+      href="/"
+      aria-current={isCurrentPage("/") ? "page" : undefined}
+    >
+      <Logo class="logo__icon" />
+    </a>
+
+    <hr class="logo__line" />
+  </div>
+
+  <button
+    aria-label="Open navigation menu"
+    aria-expanded="false"
+    aria-controls="primary-nav"
+    id="nav-toggle"
+  >
+    <Burger />
+  </button>
+
+  <div id="nav-overlay" data-state="close"></div>
+
+  <nav id="primary-nav" aria-label="Primary navigation" data-state="close">
+    <button aria-label="Close navigation menu" id="nav-close">
+      <Close />
+    </button>
+    <ul class="links nav-list">
+      {
+        navItems.map((item) => {
+          const active = isCurrentPage(item.href);
+          return (
+            <li>
+              <NavLink
+                href={item.href}
+                active={active}
+                transitionName="header-link-active-indicator"
+                class="link text-preset-8"
+              >
+                <strong>{item.number}</strong> {item.label}
+              </NavLink>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    padding: var(--spacing-300);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo__icon {
+    display: block;
+    min-width: clamp(2.5rem, 2rem + 2vw, 3rem);
+    aspect-ratio: 1/1;
+  }
+
+  .logo__line {
+    display: none;
+    border: none;
+    border-block-end: 1px solid hsl(from var(--white) h s l / 0.25);
+    z-index: 110;
+  }
+
+  #nav-toggle,
+  #nav-close {
+    color: var(--blue-300);
+    transition: color 0.2s ease;
+  }
+
+  #nav-toggle:hover,
+  #nav-close:hover {
+    color: var(--white);
+  }
+
+  #nav-toggle svg {
+    width: 1.5rem;
+    height: auto;
+    display: block;
+  }
+
+  #nav-close svg {
+    width: 1.25rem;
+    height: auto;
+    display: block;
+  }
+
+  #nav-toggle {
+    padding: var(--spacing-150);
+  }
+
+  #nav-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  #nav-overlay[data-state="open"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #primary-nav {
+    z-index: 100;
+    /* Fallback */
+    background-color: hsl(from var(--blue-900) h s l / 0.85);
+
+    /* Glassmorphism Effect  */
+    @supports (backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px)) {
+      background-color: hsl(from var(--blue-900) h s l / 0.15);
+      -webkit-backdrop-filter: blur(80px);
+      backdrop-filter: blur(80px);
+    }
+
+    position: fixed;
+    top: 0;
+    right: 0;
+    min-width: 15.875rem;
+    min-height: 100dvh;
+    padding-inline-start: var(--spacing-400);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-600);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+      transform 0.3s ease-in-out,
+      visibility 0s linear 0.3s;
+  }
+
+  #primary-nav[data-state="open"] {
+    transform: translateX(0);
+    visibility: visible;
+    transition:
+      transform 0.3s ease-in-out,
+      visibility 0s linear 0s;
+  }
+
+  #nav-close {
+    align-self: flex-end;
+    padding-block: var(--spacing-400);
+    padding-inline: var(--spacing-300);
+  }
+
+  .links {
+    flex-direction: column;
+    gap: var(--spacing-400);
+  }
+
+  .links :global(.link) {
+    font-size: 1rem;
+  }
+
+  @media (width < 48rem) {
+    .links :global(.link):not([aria-current="page"])::after,
+    .links :global(.nav-link__indicator) {
+      top: 0;
+      bottom: 0;
+      left: auto;
+      right: 0;
+      width: 3px;
+      height: 100%;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    header {
+      padding: 0;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo__link {
+      margin-inline: var(--spacing-500);
+    }
+
+    .logo__line {
+      display: block;
+      width: 0px;
+      flex-grow: 1;
+    }
+
+    #nav-toggle,
+    #nav-close,
+    #nav-overlay {
+      display: none;
+    }
+
+    #primary-nav {
+      visibility: visible;
+      min-width: min-content;
+      flex: 1 1 1;
+
+      /* Fallback */
+      background-color: hsl(from var(--white) h s l / 0.05);
+
+      /* Glassmorphism Effect  */
+      @supports (backdrop-filter: blur(1px)) or
+        (-webkit-backdrop-filter: blur(1px)) {
+        background-color: hsl(from var(--white) h s l / 0.05);
+        -webkit-backdrop-filter: blur(80px);
+        backdrop-filter: blur(80px);
+      }
+
+      position: relative;
+      min-height: fit-content;
+      padding-inline: var(--spacing-500);
+      flex-direction: row;
+      align-items: center;
+      transform: none;
+      transition: none;
+    }
+
+    .links {
+      width: 100%;
+      flex-direction: row;
+      justify-content: end;
+      gap: var(--spacing-600);
+    }
+
+    .links :global(.link) {
+      height: 6rem;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-150);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    header {
+      padding-block-start: var(--spacing-500);
+    }
+
+    .logo {
+      flex-grow: 1;
+    }
+
+    .logo__link {
+      padding-inline: var(--spacing-800);
+    }
+
+    #primary-nav {
+      padding-inline: var(--spacing-800);
+      margin-inline-start: calc(-1 * var(--spacing-400));
+    }
+
+    .links {
+      gap: clamp(var(--spacing-400), 3vw, var(--spacing-600));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #nav-overlay,
+    #primary-nav {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const mq = window.matchMedia("(min-width: 48rem)");
+
+    const nav = document.querySelector("#primary-nav");
+    const navOverlay = document.querySelector("#nav-overlay");
+    const btnBurger = document.getElementById("nav-toggle");
+    const btnClose = document.getElementById("nav-close");
+    const logoLink = document.querySelector(".logo__link");
+    const main = document.querySelector("main");
+
+    const inertTargets = [logoLink, btnBurger, main];
+
+    function openMenu() {
+      btnBurger?.setAttribute("aria-expanded", "true");
+      nav?.setAttribute("data-state", "open");
+      navOverlay?.setAttribute("data-state", "open");
+
+      inertTargets.forEach((el) => el?.setAttribute("inert", ""));
+    }
+
+    function closeMenu() {
+      btnBurger?.setAttribute("aria-expanded", "false");
+      nav?.setAttribute("data-state", "close");
+      navOverlay?.setAttribute("data-state", "close");
+
+      inertTargets.forEach((el) => el?.removeAttribute("inert"));
+    }
+
+    function toggleMenu() {
+      const expanded = btnBurger?.getAttribute("aria-expanded") === "true";
+      if (expanded) {
+        closeMenu();
+        btnBurger?.focus();
+      } else {
+        openMenu();
+        btnClose?.focus();
+      }
+    }
+
+    btnBurger?.addEventListener("click", toggleMenu);
+    btnClose?.addEventListener("click", closeMenu);
+    navOverlay?.addEventListener("click", closeMenu);
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    if (!mq.matches) {
+      nav?.setAttribute("role", "dialog");
+      nav?.setAttribute("aria-modal", "true");
+    }
+
+    function handleMediaChange(event: MediaQueryListEvent) {
+      //   const allLinks = document.querySelectorAll<HTMLElement>(".link");
+
+      if (event.matches) {
+        closeMenu();
+        nav?.removeAttribute("role");
+        nav?.removeAttribute("aria-modal");
+        // allLinks.forEach((link) => {
+        //   link.classList.add("nav-link--horizontal");
+        // });
+      } else {
+        nav?.setAttribute("role", "dialog");
+        nav?.setAttribute("aria-modal", "true");
+        // allLinks.forEach((link) => {
+        //   link.classList.remove("nav-link--horizontal");
+        // });
+      }
+    }
+
+    mq.addEventListener("change", handleMediaChange);
+
+    // function setHoverOrigin(event: MouseEvent) {
+    //   const link = event.currentTarget as HTMLElement;
+    //   const rect = link.getBoundingClientRect();
+    //   const isLeft = event.clientX - rect.left < rect.width / 2;
+
+    //   link.style.setProperty("--origin", isLeft ? "left" : "right");
+    // }
+
+    // document.querySelectorAll<HTMLElement>(".link").forEach((link) => {
+    //   link.addEventListener("mouseenter", setHoverOrigin);
+    //   link.addEventListener("mouseleave", setHoverOrigin);
+    // });
+
+    document.addEventListener(
+      "astro:before-preparation",
+      () => {
+        document.removeEventListener("keydown", handleKeyDown);
+        mq.removeEventListener("change", handleMediaChange);
+      },
+      { once: true },
+    );
+  });
+</script>
