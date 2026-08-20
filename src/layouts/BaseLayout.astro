@@ -1,0 +1,84 @@
+---
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+
+import Navbar from "../components/Navbar.astro";
+
+import "../styles/reset.css";
+import "../styles/styles.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  backgrounds: {
+    mobile: ImageMetadata;
+    tablet: ImageMetadata;
+    desktop: ImageMetadata;
+  };
+  class?: string;
+}
+
+const {
+  title,
+  description = "Space tourism website",
+  backgrounds,
+  class: className,
+} = Astro.props;
+
+const optMobile = await getImage({ src: backgrounds.mobile, format: "webp" });
+const optTablet = await getImage({ src: backgrounds.tablet, format: "webp" });
+const optDesktop = await getImage({ src: backgrounds.desktop, format: "webp" });
+---
+
+<html lang="en" transition:name="root" transition:animate="fade">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+
+    <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" /> -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/assets/favicon-32x32.png"
+    />
+
+    <title>Space tourism website | {title}</title>
+    <ClientRouter />
+  </head>
+  <body
+    style={{
+      "--bg-mobile": `url(${optMobile.src})`,
+      "--bg-tablet": `url(${optTablet.src})`,
+      "--bg-desktop": `url(${optDesktop.src})`,
+    }}
+  >
+    <Navbar />
+    <main class:list={["main-layout", className]}>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .main-layout {
+    width: 100%;
+    max-width: var(--main-max-width, 1110px);
+    margin: var(--main-margin, 0 auto);
+    flex: 1;
+    display: flex;
+  }
+</style>
+
+<script>
+  import { preventSamePageNavigation } from "../scripts/prevent-same-page-nav";
+
+  document.addEventListener("astro:page-load", () => {
+    preventSamePageNavigation("[aria-current='page']");
+  });
+</script>
