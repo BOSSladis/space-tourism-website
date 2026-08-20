@@ -1,0 +1,333 @@
+---
+import { getCollection } from "astro:content";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+import BgMobile from "@assets/technology/background-technology-mobile.jpg";
+import BgTablet from "@assets/technology/background-technology-tablet.jpg";
+import BgDesktop from "@assets/technology/background-technology-desktop.jpg";
+import { Picture } from "astro:assets";
+import { getImage } from "astro:assets";
+
+export async function getStaticPaths() {
+  const technologies = (await getCollection("technology")).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+
+  return technologies.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry, allTechnologies: technologies },
+  }));
+}
+
+const { entry, allTechnologies } = Astro.props;
+const technology = entry.data;
+
+const optimizedPortrait = await getImage({
+  src: technology.images.portrait,
+  format: "webp",
+});
+
+const optimizedLandscape = await getImage({
+  src: technology.images.landscape,
+  format: "webp",
+});
+---
+
+<BaseLayout
+  title={`Technology - ${technology.name}`}
+  class="technology"
+  backgrounds={{
+    mobile: BgMobile,
+    tablet: BgTablet,
+    desktop: BgDesktop,
+  }}
+>
+  <h1 class="technology__title text-preset-6">
+    <span>03</span> Space launch 101
+  </h1>
+
+  <div class="technology__content">
+    <div
+      class="technology__picture-wrapper"
+      transition:name="technology__picture-wrapper"
+      transition:animate="slide"
+    >
+      <picture>
+        <source media="(min-width: 64rem)" srcset={optimizedPortrait.src} />
+        <source media="(min-width: 48rem)" srcset={optimizedPortrait.src} />
+        <img
+          src={optimizedPortrait.src}
+          alt=""
+          class="technology__picture"
+          width={optimizedPortrait.attributes.width}
+          height={optimizedPortrait.attributes.height}
+        />
+      </picture>
+    </div>
+    <div class="technology__info">
+      <nav aria-label="Technologies navigation" class="technology__nav">
+        <ul class="technology__links">
+          {
+            allTechnologies.map((item, index) => {
+              const active = item.id === entry.id;
+              return (
+                <li>
+                  <a
+                    href={`/technology/${item.id}`}
+                    class="technology__link text-preset-4"
+                    aria-label={`View ${item.data.name}`}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    {index + 1}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+      <div
+        class="technology__description"
+        transition:name="technology__description"
+        transition:animate="slide"
+      >
+        <p class="technology__label text-preset-4">the terminology...</p>
+        <h2 class="technology__subtitle text-preset-3">{technology.name}</h2>
+        <p class="technology__bio text-preset-9">
+          {technology.description}
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  :global(.technology) {
+    padding: clamp(
+      var(--spacing-300),
+      -0.1667rem + 5.5556vw,
+      var(--spacing-500)
+    );
+    padding-block-end: clamp(
+      var(--spacing-500),
+      3.8333rem + -2.7778vw,
+      var(--spacing-600)
+    );
+    flex-direction: column;
+  }
+
+  .technology__title {
+    font-family: var(--font-subtitle);
+    font-size: clamp(1rem, 0.5833rem + 1.3889vw, 1.25rem);
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+    text-align: center;
+
+    margin-bottom: var(--spacing-300);
+  }
+
+  .technology__title > span {
+    font-weight: bold;
+    margin-right: var(--spacing-300);
+    color: hsl(from var(--white) h s l / 0.25);
+  }
+
+  .technology__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-400);
+  }
+
+  .technology__picture-wrapper {
+    flex: 1;
+    margin-block-start: var(--spacing-800);
+    margin-inline: clamp(
+      calc(-1 * var(--spacing-500)),
+      calc(0.1667rem - 5.5556vw),
+      calc(-1 * var(--spacing-300))
+    );
+  }
+
+  .technology__picture-wrapper > picture {
+    display: block;
+    width: 100%;
+  }
+
+  .technology__picture {
+    display: block;
+    width: 100%;
+    max-height: clamp(16.125rem, 5.8125rem + 34.375vw, 22.3125rem);
+    object-fit: cover;
+    object-position: bottom;
+  }
+
+  .technology__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-500);
+  }
+
+  .technology__links {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-200);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .technology__link {
+    position: relative;
+    width: clamp(2.5rem, 0.8333rem + 5.5556vw, 3.5rem);
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: var(--white);
+    border-radius: 50%;
+    border: 1px solid hsl(from var(--white) h s l / 0.25);
+    transition: background-color 0.3s ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      border-radius: 50%;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: hsl(0 0% 100% / 0.5);
+    }
+
+    &[aria-current="page"] {
+      border: none;
+      color: var(--blue-900);
+      background-color: var(--white);
+    }
+  }
+
+  .technology__description {
+    max-width: 512px;
+    text-align: center;
+    color: var(--blue-300);
+  }
+
+  .technology__label {
+    color: hsl(from var(--white) h s l / 0.5);
+    text-transform: uppercase;
+
+    margin-bottom: var(--spacing-200);
+  }
+
+  .technology__subtitle {
+    color: var(--white);
+    text-transform: uppercase;
+
+    margin-bottom: var(--spacing-300);
+  }
+
+  @media (min-width: 48rem) {
+    :global(.technology) {
+      padding-block: clamp(2.5rem, 1rem + 3.125vw, 3rem);
+      padding-inline: clamp(0rem, 10rem + -15.625vw, 2.5rem);
+    }
+
+    .technology__title {
+      text-align: left;
+      letter-spacing: 4px;
+      font-size: clamp(1.25rem, -0.25rem + 3.125vw, 1.75rem);
+    }
+
+    .technology__picture {
+      object-position: center;
+      max-height: clamp(22.3125rem, -23.25rem + 94.9219vw, 37.5rem);
+    }
+
+    .technology__link {
+      width: clamp(3.5rem, -1rem + 9.375vw, 5rem);
+    }
+
+    .technology__bio {
+      min-height: calc(1.8em * 5);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    :global(.technology) {
+      --main-max-width: 1275px;
+      --main-margin: 0 0 0 auto;
+    }
+
+    .technology__content {
+      flex-direction: row-reverse;
+    }
+
+    .technology__picture-wrapper {
+      margin: 0;
+    }
+
+    .technology__picture-wrapper > picture {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .technology__picture {
+      height: 100%;
+      margin-block: auto;
+    }
+
+    .technology__info {
+      flex-direction: row;
+    }
+
+    .technology__links {
+      flex-direction: column;
+    }
+
+    .technology__description {
+      text-align: left;
+    }
+  }
+</style>
+
+<script>
+  import { initSwipeNavigation } from "../../scripts/swipe-navigation";
+
+  document.addEventListener("astro:page-load", () => {
+    const mq = window.matchMedia("(min-width: 64rem)");
+
+    let cleanup = initSwipeNavigation(
+      ".technology__link",
+      ".technology__content",
+      mq.matches ? "y" : "x",
+    );
+
+    function handleMediaChange(event: MediaQueryListEvent) {
+      cleanup();
+      cleanup = initSwipeNavigation(
+        ".technology__link",
+        ".technology__content",
+        event.matches ? "y" : "x",
+      );
+    }
+
+    mq.addEventListener("change", handleMediaChange);
+
+    document.addEventListener(
+      "astro:before-preparation",
+      () => {
+        cleanup();
+        mq.removeEventListener("change", handleMediaChange);
+      },
+      { once: true },
+    );
+  });
+</script>
