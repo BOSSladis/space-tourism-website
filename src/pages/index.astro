@@ -1,0 +1,183 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+import BgMobile from "@assets/home/background-home-mobile.jpg";
+import BgTablet from "@assets/home/background-home-tablet.jpg";
+import BgDesktop from "@assets/home/background-home-desktop.jpg";
+---
+
+<BaseLayout
+  title="Home"
+  class="home-main"
+  backgrounds={{
+    mobile: BgMobile,
+    tablet: BgTablet,
+    desktop: BgDesktop,
+  }}
+>
+  <section class="hero">
+    <div class="hero__text">
+      <h1>
+        <span class="hero__subtitle text-preset-6"
+          >So, you want to travel to</span
+        >
+        <span class="hero__title text-preset-1">Space</span>
+      </h1>
+
+      <p class="hero__description text-preset-9">
+        Let’s face it; if you want to go to space, you might as well genuinely
+        go to outer space and not hover kind of on the edge of it. Well sit
+        back, and relax because we’ll give you a truly out of this world
+        experience!
+      </p>
+    </div>
+
+    <div class="hero__cta">
+      <a href="/destination" class="explore-btn text-preset-4">Explore</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  :global(.home-main) {
+  }
+
+  .hero {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-block: clamp(
+      var(--spacing-300),
+      -9.3333rem + 36.1111vw,
+      var(--spacing-1600)
+    );
+    padding-inline: clamp(
+      var(--spacing-300),
+      -0.1667rem + 5.5556vw,
+      var(--spacing-500)
+    );
+    --children-max-width: 32rem;
+  }
+
+  .hero__text {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-300);
+    text-align: center;
+    max-width: var(--children-max-width);
+  }
+
+  h1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-300);
+    text-transform: uppercase;
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-subtitle);
+    letter-spacing: 0.15rem;
+    color: var(--blue-300);
+  }
+
+  .hero__title {
+  }
+
+  .hero__description {
+    color: var(--blue-300);
+  }
+
+  .hero__cta {
+    flex: 1 1 0;
+    max-width: var(--children-max-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .explore-btn {
+    position: relative;
+    width: clamp(9rem, -4.3333rem + 44.4444vw, 17rem);
+    aspect-ratio: 1/1;
+    background-color: var(--white);
+    color: var(--blue-900);
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .explore-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: hsl(from var(--white) h s l / 0.1);
+    scale: 1;
+    transition: scale 0.3s ease;
+    z-index: -1;
+  }
+
+  .explore-btn:hover::before,
+  .explore-btn:focus::before {
+    /* scale: clamp(1.65, 2.5833 - 1.9444vw, 2); */
+    scale: 2;
+    @media (min-width: 48rem) {
+      scale: 1.65;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .hero {
+      justify-content: space-between;
+    }
+
+    .hero__text {
+      flex: none;
+      max-height: fit-content;
+    }
+
+    .hero__cta {
+      flex: none;
+      max-height: fit-content;
+    }
+
+    /* .explore-btn:hover::before,
+    .explore-btn:focus::before {
+      scale: 1.65;
+    } */
+  }
+
+  @media (min-width: 64rem) {
+    :global(.home-main) {
+      align-items: flex-end;
+    }
+
+    .hero {
+      /* flex: 0; */
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      --children-max-width: 33.75rem;
+    }
+
+    .hero__text {
+      align-items: flex-start;
+      gap: var(--spacing-300);
+      text-align: start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .explore-btn::before {
+      transition: none !important;
+    }
+  }
+</style>
