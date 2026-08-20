@@ -6,23 +6,25 @@ import NavLink from "./NavLink.astro";
 import { getUrl } from "@scripts/get-url";
 
 const { pathname } = Astro.url;
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const cleanPathname = pathname.startsWith(base)
-  ? pathname.slice(base.length - 1) || "/"
+  ? pathname.slice(base.length) || "/"
   : pathname;
 
 const navItems = [
   { href: "/", label: "Home", number: "00" },
-  { href: "/destination", label: "Destination", number: "01" },
-  { href: "/crew", label: "Crew", number: "02" },
-  { href: "/technology", label: "Technology", number: "03" },
+  { href: "/destination/moon", label: "Destination", number: "01" },
+  { href: "/crew/douglas-hurley", label: "Crew", number: "02" },
+  { href: "/technology/launch-vehicle", label: "Technology", number: "03" },
 ];
 
 const isCurrentPage = (href: string) => {
   if (href === "/") {
     return cleanPathname === "/";
   }
-  return cleanPathname.startsWith(href);
+
+  const section = "/" + href.split("/")[1];
+  return cleanPathname.startsWith(section);
 };
 ---
 
