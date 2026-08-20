@@ -1,0 +1,249 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&family=Barlow:wght@400&family=Bellefair&display=swap"); */
+
+/* stylelint-disable block-no-empty */
+/* stylelint-disable media-feature-range-notation */
+
+@font-face {
+  font-family: Bellefair;
+  src: url("/assets/fonts/Bellefair-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Barlow;
+  src: url("/assets/fonts/Barlow-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Barlow;
+  src: url("/assets/fonts/Barlow-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/assets/fonts/BarlowCondensed-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/assets/fonts/BarlowCondensed-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --blue-300: #d0d6f9;
+  --blue-900: #0b0d17;
+  --white: #fff;
+
+  /* Base */
+  --font-title: "Bellefair", serif;
+  --font-subtitle: "Barlow Condensed", sans-serif;
+  --font-content: "Barlow", sans-serif;
+  --fw-normal: 400;
+  --fw-bold: 700;
+
+  /* Spacing */
+  --spacing-25: 0.125rem; /* 2px */
+  --spacing-50: 0.25rem; /* 4px */
+  --spacing-100: 0.5rem; /* 8px */
+  --spacing-150: 0.75rem; /* 12px */
+  --spacing-200: 1rem; /* 16px */
+  --spacing-300: 1.5rem; /* 24px */
+  --spacing-400: 2rem; /* 32px */
+  --spacing-500: 2.5rem; /* 40px */
+  --spacing-600: 3rem; /* 48px */
+  --spacing-800: 4rem; /* 64px */
+  --spacing-1000: 5rem; /* 80px */
+  --spacing-1200: 6rem; /* 96px */
+  --spacing-1600: 8rem; /* 128px */
+}
+
+body {
+  background-color: var(--blue-900);
+  color: var(--white);
+  min-height: 100dvh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: var(--bg-mobile);
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  Mobile (0 - 480px) 
+  Tablet (768px)
+  Desktop (1024px - infinite)
+  */
+
+.text-preset-1 {
+  font-family: var(--font-title);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+
+  /*
+    slope = ((max-min) / (sizeWhenMax - sizeWhenMin))
+    slope = ((9rem-5rem) / (48rem - 30rem))
+    slope = 0.2222
+
+    origin = (min - (sizeWhenMin x slope))
+    origin = (5rem - (30rem x 0.2222))
+    origin = -1.667rem
+
+    min | origin + slope | max
+  */
+  font-size: clamp(5rem, -1.6667rem + 22.2222vw, 9rem);
+}
+
+.text-preset-2 {
+  font-family: var(--font-title);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+
+  /* Mobile -> Tablet (30rem -> 48rem : 3.5rem -> 5rem) */
+  font-size: clamp(3.5rem, 1rem + 8.3333vw, 5rem);
+
+  /* Tablet -> Desktop (48rem -> 64rem : 5rem -> 6rem) */
+  @media (min-width: 48rem) {
+    font-size: clamp(5rem, 2rem + 6.25vw, 6rem);
+  }
+}
+
+.text-preset-3 {
+  font-family: var(--font-title);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+
+  /* Mobile -> Tablet (30rem -> 48rem : 1.5rem -> 2.5rem) */
+  font-size: clamp(1.5rem, -0.1667rem + 5.5556vw, 2.5rem);
+
+  /* Tablet -> Desktop (48rem -> 64rem : 2.5rem -> 3.5rem) */
+  @media (min-width: 48rem) {
+    font-size: clamp(2.5rem, -0.5rem + 6.25vw, 3.5rem);
+  }
+}
+
+.text-preset-4 {
+  font-family: var(--font-title);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+  font-size: clamp(1.125rem, 0.5rem + 2.0833vw, 1.5rem);
+
+  @media (min-width: 48rem) {
+    font-size: clamp(1.5rem, 0rem + 3.125vw, 2rem);
+  }
+}
+
+.text-preset-5 {
+  font-family: var(--font-subtitle);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+  letter-spacing: 4px;
+  font-size: clamp(1.25rem, -0.25rem + 3.125vw, 1.75rem);
+}
+
+.text-preset-6 {
+  font-family: var(--font-title);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+  font-size: clamp(1rem, -0.25rem + 4.1667vw, 1.75rem);
+}
+
+.text-preset-7 {
+  font-family: var(--font-subtitle);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+  letter-spacing: 2px;
+  font-size: 0.875rem;
+}
+
+.text-preset-8 {
+  font-family: var(--font-subtitle);
+  font-weight: var(--fw-normal);
+  line-height: normal;
+  letter-spacing: 2px;
+  font-size: clamp(0.875rem, 0.6667rem + 0.6944vw, 1rem);
+}
+
+.text-preset-8-bold {
+  font-family: var(--font-subtitle);
+  font-weight: var(--fw-bold);
+  line-height: normal;
+  letter-spacing: 2.7px;
+  font-size: clamp(0.875rem, 0.6667rem + 0.6944vw, 1rem);
+}
+
+.text-preset-9 {
+  font-family: var(--font-content);
+  font-weight: var(--fw-normal);
+  line-height: 1.8;
+  font-size: clamp(0.9375rem, 0.8333rem + 0.3472vw, 1rem);
+
+  @media (min-width: 48rem) {
+    font-size: clamp(1rem, 0.625rem + 0.7813vw, 1.125rem);
+  }
+}
+
+.nav-list {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Small Mobile */
+@media (min-width: 20rem) {
+}
+
+/* Large Mobile */
+@media (min-width: 30rem) {
+}
+
+/* Tablet */
+@media (min-width: 48rem) {
+  body {
+    background-image: var(--bg-tablet);
+  }
+}
+
+/* Desktop */
+@media (min-width: 64rem) {
+  body {
+    background-image: var(--bg-desktop);
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 75rem) {
+}
+
+/* Extra Large */
+@media (min-width: 90rem) {
+}
+
+@media (prefers-reduced-motion: no-preference) {
+}
+
+@media (prefers-reduced-motion) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  [data-astro-transition-scope] {
+    animation: none !important;
+  }
+}
