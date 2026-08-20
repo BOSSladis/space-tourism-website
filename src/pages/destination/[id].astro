@@ -1,0 +1,264 @@
+---
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+import BgMobile from "@assets/destination/background-destination-mobile.jpg";
+import BgTablet from "@assets/destination/background-destination-tablet.jpg";
+import BgDesktop from "@assets/destination/background-destination-desktop.jpg";
+import { getImage } from "astro:assets";
+import NavLink from "@components/NavLink.astro";
+
+export async function getStaticPaths() {
+  const destinations = (await getCollection("destinations")).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+
+  return destinations.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry, allDestinations: destinations },
+  }));
+}
+
+const { entry, allDestinations } = Astro.props;
+const destination = entry.data;
+---
+
+<BaseLayout
+  title={`Destination - ${destination.name}`}
+  class="destination"
+  backgrounds={{
+    mobile: BgMobile,
+    tablet: BgTablet,
+    desktop: BgDesktop,
+  }}
+>
+  <h1 class="destination__title text-preset-6">
+    <span>01</span> Pick your destination
+  </h1>
+
+  <div class="destination__content">
+    <div class="destination__picture-wrapper">
+      <Picture
+        class="destination__picture"
+        src={destination.images.png}
+        formats={["webp"]}
+        alt=""
+        width={445}
+        height={445}
+      />
+    </div>
+
+    <div class="destination__info">
+      <nav aria-label="Destination navigation" class="destination__navigation">
+        <ul class="destination__links nav-list">
+          {
+            allDestinations.map((item) => {
+              const active = item.id === entry.id;
+              return (
+                <li>
+                  <NavLink
+                    href={`/destination/${item.id}`}
+                    active={active}
+                    transitionName="destination-nav-indicator"
+                    class="destination__link text-preset-8"
+                  >
+                    {item.data.name}
+                  </NavLink>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+
+      <div class="destination__description">
+        <h2 class="destination__subtitle text-preset-2">{destination.name}</h2>
+        <p class="text-preset-9">
+          {destination.description}
+        </p>
+
+        <div class="line"></div>
+
+        <dl class="destination__stats">
+          <div class="destination__stat">
+            <dt class="text-preset-7">Avg. distance</dt>
+            <dd class="text-preset-6">{destination.distance}</dd>
+          </div>
+          <div class="destination__stat">
+            <dt class="text-preset-7">Est. travel time</dt>
+            <dd class="text-preset-6">{destination.travel}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  :global(.destination) {
+    padding: clamp(
+      var(--spacing-300),
+      -0.1667rem + 5.5556vw,
+      var(--spacing-500)
+    );
+    flex-direction: column;
+  }
+
+  .destination__title {
+    font-family: var(--font-subtitle);
+    font-size: clamp(1rem, 0.5833rem + 1.3889vw, 1.25rem);
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+    text-align: center;
+
+    margin-bottom: var(--spacing-300);
+  }
+
+  .destination__title > span {
+    font-weight: bold;
+    margin-right: var(--spacing-300);
+    color: hsl(from var(--white) h s l / 0.25);
+  }
+
+  .destination__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .destination__picture-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-400);
+  }
+
+  .destination__picture {
+    width: 100%;
+    max-width: clamp(9.375rem, -6.25rem + 52.0833vw, 18.75rem);
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+  }
+
+  .destination__info {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 32.125rem;
+  }
+
+  .destination__links {
+    justify-content: center;
+    gap: var(--spacing-400);
+    margin-bottom: var(--spacing-300);
+  }
+
+  .destination__links :global(.destination__link) {
+    height: 2rem;
+  }
+
+  .destination__description {
+    text-align: center;
+    color: var(--blue-300);
+  }
+
+  .destination__subtitle {
+    color: var(--white);
+    text-transform: uppercase;
+
+    margin-bottom: var(--spacing-200);
+  }
+
+  .destination__description p {
+    min-height: calc(1.8em * 5);
+  }
+
+  .line {
+    border: none;
+    border-bottom: 1px solid hsl(from var(--white) h s l / 0.25);
+    margin-block: var(--spacing-300);
+  }
+
+  .destination__stat {
+    text-transform: uppercase;
+  }
+
+  .destination__stat > dt {
+  }
+
+  .destination__stat > dd {
+    margin-top: var(--spacing-150);
+    color: var(--white);
+    font-size: 1.75rem;
+  }
+
+  .destination__stat:first-child {
+    margin-bottom: var(--spacing-300);
+  }
+
+  @media (min-width: 48rem) {
+    :global(.destination) {
+      padding-block: clamp(
+        var(--spacing-500),
+        1rem + 3.125vw,
+        var(--spacing-600)
+      );
+      padding-inline: clamp(0rem, 10rem + -15.625vw, 2.5rem);
+    }
+
+    .destination__title {
+      font-size: clamp(1.25rem, -0.25rem + 3.125vw, 1.75rem);
+      text-align: left;
+    }
+
+    .destination__picture {
+      max-width: clamp(18.75rem, -15rem + 70.3125vw, 30rem);
+    }
+
+    .destination__description p {
+      min-height: calc(1.8em * 4);
+    }
+
+    .destination__stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-300);
+    }
+
+    .destination__stat {
+      flex: 1;
+    }
+
+    .destination__stat:first-child {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .destination__content {
+      flex-direction: row;
+    }
+
+    .destination__picture-wrapper {
+      margin-right: var(--spacing-400);
+      margin-bottom: 0;
+    }
+
+    .destination__info {
+      margin-block: auto;
+      margin-inline: 0;
+    }
+
+    .destination__links {
+      justify-content: flex-start;
+    }
+
+    .destination__description {
+      text-align: left;
+    }
+  }
+</style>
