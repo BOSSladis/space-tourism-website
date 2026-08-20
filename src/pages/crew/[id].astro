@@ -1,0 +1,277 @@
+---
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+import BgMobile from "@assets/crew/background-crew-mobile.jpg";
+import BgTablet from "@assets/crew/background-crew-tablet.jpg";
+import BgDesktop from "@assets/crew/background-crew-desktop.jpg";
+
+export async function getStaticPaths() {
+  const crews = (await getCollection("crew")).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+
+  return crews.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry, allCrews: crews },
+  }));
+}
+
+const { entry, allCrews } = Astro.props;
+const crew = entry.data;
+---
+
+<BaseLayout
+  title={`Crew - ${crew.name}`}
+  class="crew"
+  backgrounds={{
+    mobile: BgMobile,
+    tablet: BgTablet,
+    desktop: BgDesktop,
+  }}
+>
+  <h1 class="crew__title text-preset-6">
+    <span>02</span> Meet your crew
+  </h1>
+
+  <div class="crew__content">
+    <div class="crew__info">
+      <div
+        class="crew__description"
+        transition:name="crew__description"
+        transition:animate="slide"
+      >
+        <p class="crew__role text-preset-4">{crew.role}</p>
+        <h2 class="crew__subtitle text-preset-3">{crew.name}</h2>
+        <p class="crew__bio text-preset-9">
+          {crew.bio}
+        </p>
+      </div>
+      <nav aria-label="Crew members" class="crew__nav">
+        <ul class="crew__dots">
+          {
+            allCrews.map((member) => {
+              const active = member.id === entry.id;
+              return (
+                <li>
+                  <a
+                    href={`/crew/${member.id}`}
+                    aria-label={`View ${member.data.name}`}
+                    aria-current={active ? "page" : undefined}
+                    class="crew__dot"
+                  />
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+    </div>
+    <div
+      class="crew__picture-wrapper"
+      transition:name="crew__picture-wrapper"
+      transition:animate="slide"
+    >
+      <Picture
+        class="crew__picture"
+        src={crew.images.png}
+        formats={["webp"]}
+        alt=""
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  :global(.crew) {
+    padding: clamp(
+      var(--spacing-300),
+      -0.1667rem + 5.5556vw,
+      var(--spacing-500)
+    );
+    flex-direction: column;
+  }
+
+  .crew__title {
+    font-family: var(--font-subtitle);
+    font-size: clamp(1rem, 0.5833rem + 1.3889vw, 1.25rem);
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+    text-align: center;
+
+    margin-bottom: var(--spacing-300);
+  }
+
+  .crew__title > span {
+    font-weight: bold;
+    margin-right: var(--spacing-300);
+    color: hsl(from var(--white) h s l / 0.25);
+  }
+
+  .crew__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-400);
+  }
+
+  .crew__info {
+    padding-block-start: var(--spacing-500);
+    margin-inline: auto;
+    width: 100%;
+    max-width: 32.125rem;
+  }
+
+  .crew__description {
+    text-align: center;
+    color: var(--blue-300);
+    margin-bottom: var(--spacing-300);
+  }
+
+  .crew__role {
+    color: hsl(from var(--white) h s l / 0.5);
+    text-transform: uppercase;
+
+    margin-bottom: var(--spacing-100);
+  }
+
+  .crew__subtitle {
+    color: var(--white);
+    text-transform: uppercase;
+
+    margin-bottom: var(--spacing-300);
+  }
+
+  .crew__bio {
+    min-height: calc(1.8em * 6);
+  }
+
+  .crew__dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-200);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .crew__dot {
+    position: relative;
+    display: block;
+    width: 0.625rem;
+    aspect-ratio: 1/1;
+    /* height: 0.625rem; */
+    border-radius: 50%;
+    background-color: hsl(0 0% 100% / 0.17);
+    transition: background-color 0.3s ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: -75%;
+      border-radius: 50%;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: hsl(0 0% 100% / 0.5);
+    }
+
+    &[aria-current="page"] {
+      background-color: hsl(0 0% 100% / 1);
+    }
+  }
+
+  .crew__picture-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .crew__picture {
+    width: auto;
+    height: 100%;
+    max-height: clamp(21.25rem, -1.6667rem + 76.3889vw, 35rem);
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  @media (min-width: 48rem) {
+    :global(.crew) {
+      padding-block: clamp(
+        var(--spacing-500),
+        1rem + 3.125vw,
+        var(--spacing-600)
+      );
+      padding-inline: clamp(0rem, 10rem + -15.625vw, 2.5rem);
+    }
+
+    .crew__title {
+      font-size: clamp(1.25rem, -0.25rem + 3.125vw, 1.75rem);
+      text-align: left;
+    }
+
+    .crew__bio {
+      min-height: calc(1.8em * 4);
+    }
+
+    .crew__dots {
+      gap: clamp(var(--spacing-200), -3.5rem + 9.375vw, var(--spacing-500));
+    }
+
+    .crew__dot {
+      width: clamp(0.625rem, -0.3125rem + 1.9531vw, 0.9375rem);
+    }
+
+    .crew__picture {
+      max-height: clamp(35rem, 13.25rem + 45.3125vw, 42.25rem);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .crew__content {
+      flex-direction: row;
+    }
+
+    .crew__info {
+      padding-block-start: 0;
+      margin-inline: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .crew__description {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+
+    .crew__dots {
+      justify-content: flex-start;
+      padding-block-end: var(--spacing-600);
+    }
+  }
+</style>
+
+<script>
+  import { initSwipeNavigation } from "../../scripts/swipe-navigation";
+
+  document.addEventListener("astro:page-load", () => {
+    const cleanup = initSwipeNavigation(".crew__dot", ".crew__content");
+
+    document.addEventListener(
+      "astro:before-preparation",
+      () => {
+        cleanup();
+      },
+      { once: true },
+    );
+  });
+</script>
