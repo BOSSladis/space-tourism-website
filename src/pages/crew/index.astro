@@ -1,3 +1,5 @@
 ---
-return Astro.redirect("/crew/douglas-hurley");
+import { getUrl } from "@scripts/get-url";
+
+return Astro.redirect(getUrl("/crew/douglas-hurley"));
 ---

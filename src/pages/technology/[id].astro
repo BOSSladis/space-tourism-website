@@ -6,8 +6,8 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import BgMobile from "@assets/technology/background-technology-mobile.jpg";
 import BgTablet from "@assets/technology/background-technology-tablet.jpg";
 import BgDesktop from "@assets/technology/background-technology-desktop.jpg";
-import { Picture } from "astro:assets";
 import { getImage } from "astro:assets";
+import { getUrl } from "@scripts/get-url";
 
 export async function getStaticPaths() {
   const technologies = (await getCollection("technology")).sort(
@@ -74,7 +74,7 @@ const optimizedLandscape = await getImage({
               return (
                 <li>
                   <a
-                    href={`/technology/${item.id}`}
+                    href={getUrl(`/technology/${item.id}`)}
                     class="technology__link text-preset-4"
                     aria-label={`View ${item.data.name}`}
                     aria-current={active ? "page" : undefined}
@@ -299,7 +299,7 @@ const optimizedLandscape = await getImage({
 </style>
 
 <script>
-  import { initSwipeNavigation } from "../../scripts/swipe-navigation";
+  import { initSwipeNavigation } from "@scripts/swipe-navigation";
 
   document.addEventListener("astro:page-load", () => {
     const mq = window.matchMedia("(min-width: 64rem)");

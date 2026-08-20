@@ -7,6 +7,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import BgMobile from "@assets/crew/background-crew-mobile.jpg";
 import BgTablet from "@assets/crew/background-crew-tablet.jpg";
 import BgDesktop from "@assets/crew/background-crew-desktop.jpg";
+import { getUrl } from "@scripts/get-url";
 
 export async function getStaticPaths() {
   const crews = (await getCollection("crew")).sort(
@@ -57,7 +58,7 @@ const crew = entry.data;
               return (
                 <li>
                   <a
-                    href={`/crew/${member.id}`}
+                    href={getUrl(`/crew/${member.id}`)}
                     aria-label={`View ${member.data.name}`}
                     aria-current={active ? "page" : undefined}
                     class="crew__dot"
@@ -261,7 +262,7 @@ const crew = entry.data;
 </style>
 
 <script>
-  import { initSwipeNavigation } from "../../scripts/swipe-navigation";
+  import { initSwipeNavigation } from "@scripts/swipe-navigation";
 
   document.addEventListener("astro:page-load", () => {
     const cleanup = initSwipeNavigation(".crew__dot", ".crew__content");

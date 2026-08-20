@@ -1,9 +1,10 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
 
 import BgMobile from "@assets/home/background-home-mobile.jpg";
 import BgTablet from "@assets/home/background-home-tablet.jpg";
 import BgDesktop from "@assets/home/background-home-desktop.jpg";
+import { getUrl } from "@scripts/get-url";
 ---
 
 <BaseLayout
@@ -33,7 +34,9 @@ import BgDesktop from "@assets/home/background-home-desktop.jpg";
     </div>
 
     <div class="hero__cta">
-      <a href="/destination" class="explore-btn text-preset-4">Explore</a>
+      <a href={getUrl("/destination")} class="explore-btn text-preset-4"
+        >Explore</a
+      >
     </div>
   </section>
 </BaseLayout>

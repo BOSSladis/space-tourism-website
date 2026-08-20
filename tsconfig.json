@@ -5,9 +5,11 @@
   "compilerOptions": {
     "paths": {
       "@assets/*": ["./src/assets/*"],
+      "@styles/*": ["./src/components/*"],
       "@components/*": ["./src/components/*"],
       "@layouts/*": ["./src/layouts/*"],
-      "@data/*": ["./src/data/*"]
+      "@data/*": ["./src/data/*"],
+      "@scripts/*": ["./src/scripts/*"]
     },
     "strictNullChecks": true,
     "allowJs": true

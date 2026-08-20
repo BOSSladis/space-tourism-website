@@ -1,3 +1,5 @@
 ---
-return Astro.redirect("/technology/launch-vehicle");
+import { getUrl } from "@scripts/get-url";
+
+return Astro.redirect(getUrl("/technology/launch-vehicle"));
 ---

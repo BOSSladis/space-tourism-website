@@ -7,8 +7,8 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import BgMobile from "@assets/destination/background-destination-mobile.jpg";
 import BgTablet from "@assets/destination/background-destination-tablet.jpg";
 import BgDesktop from "@assets/destination/background-destination-desktop.jpg";
-import { getImage } from "astro:assets";
 import NavLink from "@components/NavLink.astro";
+import { getUrl } from "@scripts/get-url";
 
 export async function getStaticPaths() {
   const destinations = (await getCollection("destinations")).sort(
@@ -59,7 +59,7 @@ const destination = entry.data;
               return (
                 <li>
                   <NavLink
-                    href={`/destination/${item.id}`}
+                    href={getUrl(`/destination/${item.id}`)}
                     active={active}
                     transitionName="destination-nav-indicator"
                     class="destination__link text-preset-8"
